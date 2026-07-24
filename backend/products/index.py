@@ -5,9 +5,9 @@ import psycopg2.extras
 
 
 def handler(event: dict, context) -> dict:
-    '''Возвращает список продукции или один товар по slug из базы данных.
+    '''Возвращает список продукции или один товар по slug из базы данных, включая фото и особенности.
     Args: event с httpMethod, queryStringParameters (slug опционально); context с request_id
-    Returns: HTTP response со списком товаров или одним товаром
+    Returns: HTTP response со списком товаров или одним товаром (с массивом photos)
     '''
     method: str = event.get('httpMethod', 'GET')
 
@@ -40,35 +40,54 @@ def handler(event: dict, context) -> dict:
         if slug:
             safe_slug = slug.replace("'", "''")
             cur.execute(
-                f"SELECT id, slug, name, category, badge, description, long_description, specs, sort_order "
+                f"SELECT id, slug, name, category, badge, description, long_description, specs, features, sort_order "
                 f"FROM products WHERE slug = '{safe_slug}'"
             )
             row = cur.fetchone()
-            cur.close()
             if not row:
+                cur.close()
                 return {
                     'statusCode': 404,
                     'headers': {'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json'},
                     'body': json.dumps({'error': 'Not found'})
                 }
+            cur.execute(
+                f"SELECT url FROM product_photos WHERE product_id = {row['id']} ORDER BY sort_order ASC"
+            )
+            photos = [p['url'] for p in cur.fetchall()]
+            cur.close()
+            result = dict(row)
+            result['photos'] = photos
             return {
                 'statusCode': 200,
                 'headers': {'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json'},
-                'body': json.dumps(dict(row), default=str)
+                'body': json.dumps(result, default=str)
             }
 
         cur.execute(
-            "SELECT id, slug, name, category, badge, description, long_description, specs, sort_order "
+            "SELECT id, slug, name, category, badge, description, long_description, specs, features, sort_order "
             "FROM products ORDER BY sort_order ASC"
         )
         rows = cur.fetchall()
+
+        cur.execute("SELECT product_id, url FROM product_photos ORDER BY sort_order ASC")
+        photo_rows = cur.fetchall()
         cur.close()
+
+        photos_by_product = {}
+        for p in photo_rows:
+            photos_by_product.setdefault(p['product_id'], []).append(p['url'])
+
+        result = []
+        for r in rows:
+            item = dict(r)
+            item['photos'] = photos_by_product.get(r['id'], [])
+            result.append(item)
+
         return {
             'statusCode': 200,
             'headers': {'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json'},
-            'body': json.dumps([dict(r) for r in rows], default=str)
+            'body': json.dumps(result, default=str)
         }
     finally:
         conn.close()
-
-# trigger redeploy marker v2

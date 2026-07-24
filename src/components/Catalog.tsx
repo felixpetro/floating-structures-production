@@ -61,12 +61,20 @@ const Catalog = () => {
                   key={product.id}
                   className="group animate-scale-in overflow-hidden rounded-2xl border border-border bg-card transition duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
                 >
-                  <div className="relative flex h-40 items-center justify-center bg-gradient-to-br from-primary via-secondary to-accent">
-                    <Icon
-                      name="Ship"
-                      size={64}
-                      className="text-primary-foreground/90 transition duration-300 group-hover:scale-110"
-                    />
+                  <div className="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-primary via-secondary to-accent">
+                    {product.photos && product.photos.length > 0 ? (
+                      <img
+                        src={product.photos[0]}
+                        alt={product.name}
+                        className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
+                      />
+                    ) : (
+                      <Icon
+                        name="Ship"
+                        size={64}
+                        className="text-primary-foreground/90 transition duration-300 group-hover:scale-110"
+                      />
+                    )}
                     {product.badge && (
                       <span className="absolute right-3 top-3 rounded-full bg-background/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
                         {product.badge}

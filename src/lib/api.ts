@@ -16,6 +16,8 @@ export interface Product {
   description: string;
   long_description?: string | null;
   specs: Spec[];
+  features: string[];
+  photos: string[];
   sort_order: number;
 }
 
