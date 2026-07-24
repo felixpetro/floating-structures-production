@@ -1,6 +1,5 @@
+import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
-
-const products = ['Понтоны', 'Причалы', 'Платформы', 'Модули'];
 
 const contacts = [
   { icon: 'Phone', text: '+7 (800) 555-04-06' },
@@ -18,14 +17,14 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3">
               <div className="flex items-center justify-center w-11 h-11 rounded-lg bg-gradient-to-br from-secondary to-accent">
                 <Icon name="Anchor" size={22} className="text-primary" />
               </div>
               <span className="font-display text-2xl tracking-wide">
                 АКВА<span className="text-accent">СТРОЙ</span>
               </span>
-            </div>
+            </Link>
             <p className="mt-5 text-primary-foreground/70 max-w-md">
               Проектирование и производство плавучих конструкций под ключ.
               Понтоны, причалы, платформы и модульные системы для любых задач.
@@ -33,18 +32,23 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-display text-lg mb-5">Продукция</h4>
+            <h4 className="font-display text-lg mb-5">Разделы</h4>
             <ul className="space-y-3">
-              {products.map((item) => (
-                <li key={item}>
-                  <a
-                    href="#catalog"
-                    className="text-primary-foreground/70 hover:text-accent transition"
-                  >
-                    {item}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <Link to="/catalog" className="text-primary-foreground/70 hover:text-accent transition">
+                  Продукция
+                </Link>
+              </li>
+              <li>
+                <Link to="/services" className="text-primary-foreground/70 hover:text-accent transition">
+                  Услуги
+                </Link>
+              </li>
+              <li>
+                <Link to="/#contacts" className="text-primary-foreground/70 hover:text-accent transition">
+                  Контакты
+                </Link>
+              </li>
             </ul>
           </div>
 

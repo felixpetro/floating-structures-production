@@ -1,45 +1,19 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
-
-const steps = [
-  {
-    num: '01',
-    icon: 'PencilRuler',
-    title: 'Проектирование',
-    description: 'Расчёты, 3D-модель и рабочая документация.',
-  },
-  {
-    num: '02',
-    icon: 'Factory',
-    title: 'Производство',
-    description: 'Изготовление конструкций на собственной верфи.',
-  },
-  {
-    num: '03',
-    icon: 'Truck',
-    title: 'Доставка',
-    description: 'Логистика до объекта в любой регион.',
-  },
-  {
-    num: '04',
-    icon: 'Wrench',
-    title: 'Монтаж и якорение',
-    description: 'Сборка и надёжное закрепление на воде.',
-  },
-  {
-    num: '05',
-    icon: 'LifeBuoy',
-    title: 'Сервис',
-    description: 'Гарантийное и сезонное обслуживание.',
-  },
-  {
-    num: '06',
-    icon: 'Anchor',
-    title: 'Ввод в эксплуатацию',
-    description: 'Приёмка и передача документов.',
-  },
-];
+import { Button } from '@/components/ui/button';
+import { fetchServices, Service } from '@/lib/api';
 
 const Process = () => {
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchServices()
+      .then(setServices)
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <section id="process" className="py-20 md:py-28 bg-primary text-primary-foreground">
       <div className="container mx-auto px-4">
@@ -55,23 +29,37 @@ const Process = () => {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {steps.map((step, index) => (
-            <div
-              key={step.num}
-              className="relative rounded-xl border border-primary-foreground/15 bg-primary-foreground/5 p-6 hover:bg-primary-foreground/10 transition animate-fade-in"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <span className="absolute top-4 right-5 font-display text-4xl text-accent/40 select-none">
-                {step.num}
-              </span>
-              <Icon name={step.icon} size={32} className="text-accent" />
-              <h3 className="mt-5 font-display text-xl text-primary-foreground">
-                {step.title}
-              </h3>
-              <p className="mt-2 text-primary-foreground/60">{step.description}</p>
-            </div>
-          ))}
+        {loading ? (
+          <div className="text-center text-primary-foreground/60">Загрузка…</div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service, index) => (
+              <Link
+                to={`/services/${service.slug}`}
+                key={service.id}
+                className="relative rounded-xl border border-primary-foreground/15 bg-primary-foreground/5 p-6 hover:bg-primary-foreground/10 transition animate-fade-in block"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <span className="absolute top-4 right-5 font-display text-4xl text-accent/40 select-none">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <Icon name={service.icon} size={32} className="text-accent" />
+                <h3 className="mt-5 font-display text-xl text-primary-foreground">
+                  {service.name}
+                </h3>
+                <p className="mt-2 text-primary-foreground/60">{service.short_description}</p>
+              </Link>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-12 text-center">
+          <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-secondary">
+            <Link to="/services">
+              Все услуги
+              <Icon name="ArrowRight" size={18} />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>

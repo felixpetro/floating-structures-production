@@ -1,0 +1,22 @@
+{
+  "tests": [
+    {
+      "name": "Получить список продукции",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Получить товар по slug",
+      "method": "GET",
+      "path": "/?slug=ponton-volna-plyus",
+      "expectedStatus": 200
+    },
+    {
+      "name": "OPTIONS запрос",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}
