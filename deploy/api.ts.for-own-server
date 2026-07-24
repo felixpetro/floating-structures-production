@@ -7,13 +7,15 @@
 // 2. Замените содержимое файла src/lib/api.ts содержимым этого файла.
 // 3. Соберите проект: npm install && npm run build
 // 4. Полученную папку dist загрузите на сервер в корень сайта.
-// 5. Папку deploy/api (products.php, services.php, config.php) загрузите
-//    на сервер в папку /api рядом с файлами сайта.
-// 6. Заполните deploy/api/config.php данными вашей MySQL базы из ISPmanager.
+// 5. Папку deploy/api (products.php, services.php, leads.php, config.php)
+//    загрузите на сервер в папку /api рядом с файлами сайта.
+// 6. Заполните deploy/api/config.php данными вашей MySQL базы и почтой
+//    для приёма заявок из ISPmanager.
 // 7. Импортируйте deploy/mysql_schema.sql в вашу базу данных.
 
 export const PRODUCTS_API_URL = '/api/products.php';
 export const SERVICES_API_URL = '/api/services.php';
+export const LEADS_API_URL = '/api/leads.php';
 
 export interface Spec {
   label: string;
@@ -67,4 +69,22 @@ export async function fetchService(slug: string): Promise<Service | null> {
   if (res.status === 404) return null;
   if (!res.ok) throw new Error('Не удалось загрузить услугу');
   return res.json();
+}
+
+export interface LeadPayload {
+  name: string;
+  phone: string;
+  message?: string;
+}
+
+export async function submitLead(payload: LeadPayload): Promise<void> {
+  const res = await fetch(LEADS_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || 'Не удалось отправить заявку');
+  }
 }

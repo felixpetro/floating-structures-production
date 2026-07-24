@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { submitLead } from '@/lib/api';
 
 const contactItems = [
   { icon: 'Phone', text: '+7 (800) 555-04-06' },
@@ -17,8 +18,9 @@ const Contacts = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (name.trim().length === 0 || phone.trim().length < 6) {
@@ -30,14 +32,25 @@ const Contacts = () => {
       return;
     }
 
-    toast({
-      title: 'Заявка отправлена!',
-      description: 'Мы свяжемся с вами в ближайшее время.',
-    });
-
-    setName('');
-    setPhone('');
-    setMessage('');
+    setSubmitting(true);
+    try {
+      await submitLead({ name: name.trim(), phone: phone.trim(), message: message.trim() });
+      toast({
+        title: 'Заявка отправлена!',
+        description: 'Мы свяжемся с вами в ближайшее время.',
+      });
+      setName('');
+      setPhone('');
+      setMessage('');
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Не удалось отправить заявку',
+        description: 'Попробуйте ещё раз или позвоните нам напрямую.',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -106,10 +119,11 @@ const Contacts = () => {
 
                 <Button
                   type="submit"
+                  disabled={submitting}
                   className="w-full bg-accent text-accent-foreground hover:bg-secondary"
                 >
                   <Icon name="Send" size={18} className="mr-2" />
-                  Отправить заявку
+                  {submitting ? 'Отправка…' : 'Отправить заявку'}
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center">

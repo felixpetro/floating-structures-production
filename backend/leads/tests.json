@@ -1,0 +1,24 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS запрос",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Отправка заявки",
+      "method": "POST",
+      "path": "/",
+      "body": {"name": "Тест Тестов", "phone": "+79990001122", "message": "Тестовое сообщение"},
+      "expectedStatus": 200
+    },
+    {
+      "name": "Пустое имя",
+      "method": "POST",
+      "path": "/",
+      "body": {"name": "", "phone": "123"},
+      "expectedStatus": 400
+    }
+  ]
+}
