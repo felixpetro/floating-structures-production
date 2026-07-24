@@ -1,0 +1,70 @@
+// Этот файл нужно использовать ВМЕСТО src/lib/api.ts после того, как вы
+// скачаете код проекта (Скачать -> Подключить GitHub) и будете собирать
+// сайт для своего сервера.
+//
+// Как применить:
+// 1. Скачайте код проекта.
+// 2. Замените содержимое файла src/lib/api.ts содержимым этого файла.
+// 3. Соберите проект: npm install && npm run build
+// 4. Полученную папку dist загрузите на сервер в корень сайта.
+// 5. Папку deploy/api (products.php, services.php, config.php) загрузите
+//    на сервер в папку /api рядом с файлами сайта.
+// 6. Заполните deploy/api/config.php данными вашей MySQL базы из ISPmanager.
+// 7. Импортируйте deploy/mysql_schema.sql в вашу базу данных.
+
+export const PRODUCTS_API_URL = '/api/products.php';
+export const SERVICES_API_URL = '/api/services.php';
+
+export interface Spec {
+  label: string;
+  value: string;
+}
+
+export interface Product {
+  id: number;
+  slug: string;
+  name: string;
+  category: string;
+  badge?: string | null;
+  description: string;
+  long_description?: string | null;
+  specs: Spec[];
+  sort_order: number;
+}
+
+export interface Service {
+  id: number;
+  slug: string;
+  name: string;
+  icon: string;
+  short_description: string;
+  long_description?: string | null;
+  features: string[];
+  sort_order: number;
+}
+
+export async function fetchProducts(): Promise<Product[]> {
+  const res = await fetch(PRODUCTS_API_URL);
+  if (!res.ok) throw new Error('Не удалось загрузить продукцию');
+  return res.json();
+}
+
+export async function fetchProduct(slug: string): Promise<Product | null> {
+  const res = await fetch(`${PRODUCTS_API_URL}?slug=${encodeURIComponent(slug)}`);
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error('Не удалось загрузить товар');
+  return res.json();
+}
+
+export async function fetchServices(): Promise<Service[]> {
+  const res = await fetch(SERVICES_API_URL);
+  if (!res.ok) throw new Error('Не удалось загрузить услуги');
+  return res.json();
+}
+
+export async function fetchService(slug: string): Promise<Service | null> {
+  const res = await fetch(`${SERVICES_API_URL}?slug=${encodeURIComponent(slug)}`);
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error('Не удалось загрузить услугу');
+  return res.json();
+}

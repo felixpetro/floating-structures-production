@@ -1,0 +1,19 @@
+# Этот файл нужно положить в корень сайта на сервере (рядом с index.html).
+# Он нужен, чтобы прямые ссылки вида /catalog/ponton-volna-plyus
+# открывались корректно (SPA-роутинг на React Router).
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Реальные файлы и папку /api отдаём как есть
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  RewriteCond %{REQUEST_URI} ^/api/
+  RewriteRule ^ - [L]
+
+  # Всё остальное — на index.html, дальше маршрутизацию делает React
+  RewriteRule ^ index.html [L]
+</IfModule>
