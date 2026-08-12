@@ -1,0 +1,20 @@
+# Сборочный образ: используется ТОЛЬКО чтобы собрать сайт (dist),
+# сам сайт потом раздаётся обычным Apache/Nginx на CentOS 7 — Docker
+# на боевом сервере не нужен, только для этапа npm run build.
+FROM node:20-bullseye
+
+WORKDIR /app
+
+# Сначала зависимости — так Docker кэширует установку между сборками
+COPY package.json bun.lockb* package-lock.json* ./
+RUN npm install
+
+# Остальной код проекта
+COPY . .
+
+# Подключаем PHP-версию api вместо облачных функций poehali
+RUN cp deploy/api.ts.for-own-server src/lib/api.ts
+
+RUN npm run build
+
+CMD ["true"]
