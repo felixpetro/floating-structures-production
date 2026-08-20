@@ -113,6 +113,32 @@ const AboutPage = () => {
             </div>
           </div>
 
+          <div className="mt-20">
+            <div className="mx-auto max-w-2xl text-center">
+              <span className="font-display text-sm font-medium uppercase tracking-widest text-secondary">
+                Как нас найти
+              </span>
+              <h2 className="mt-4 font-display text-3xl font-bold text-foreground md:text-4xl">
+                Наш офис в Санкт-Петербурге
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                г. Санкт-Петербург, пр. Энергетиков, 10, оф. 223
+              </p>
+            </div>
+
+            <div className="mt-10 overflow-hidden rounded-2xl border border-border shadow-lg">
+              <iframe
+                title="Карта — офис АкваСтрой в Санкт-Петербурге"
+                src="https://yandex.ru/map-widget/v1/?text=Санкт-Петербург, проспект Энергетиков, 10&z=16"
+                width="100%"
+                height="420"
+                loading="lazy"
+                className="block"
+                style={{ border: 0 }}
+              />
+            </div>
+          </div>
+
           <div className="mt-20 text-center">
             <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-secondary">
               <Link to="/#contacts">

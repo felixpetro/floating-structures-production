@@ -79,18 +79,6 @@ const Contacts = () => {
                 </div>
               ))}
             </div>
-
-            <div className="mt-8 overflow-hidden rounded-2xl border border-border shadow-lg">
-              <iframe
-                title="Карта — офис АкваСтрой в Санкт-Петербурге"
-                src="https://yandex.ru/map-widget/v1/?text=Санкт-Петербург, проспект Энергетиков, 10&z=16"
-                width="100%"
-                height="320"
-                loading="lazy"
-                className="block"
-                style={{ border: 0 }}
-              />
-            </div>
           </div>
 
           <div className="animate-scale-in">
