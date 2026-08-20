@@ -4,7 +4,7 @@ import Icon from '@/components/ui/icon';
 const contacts = [
   { icon: 'Phone', text: '+7 (800) 555-04-06' },
   { icon: 'Mail', text: 'info@akvastroy.ru' },
-  { icon: 'MapPin', text: 'г. Самара, Набережная, 42' },
+  { icon: 'MapPin', text: 'г. Санкт-Петербург, пр. Энергетиков, 10, оф. 223' },
 ];
 
 const socials = ['Send', 'MessageCircle', 'Phone'];
