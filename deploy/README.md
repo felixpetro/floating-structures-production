@@ -60,6 +60,29 @@
 
 Если что-то не работает — пришлите мне текст ошибки, разберём вместе.
 
+## Настройка Nginx (Ubuntu)
+
+Подготовлен готовый конфиг `nginx.conf.example` — обеспечивает SPA-роутинг
+(прямые ссылки на страницы каталога/услуг) и передачу `/api/*.php` в PHP-FPM.
+
+1. Скопируйте конфиг и подставьте свои значения (домен, путь к `public`, версия PHP-FPM):
+   ```
+   sudo cp deploy/nginx.conf.example /etc/nginx/sites-available/ваш-сайт
+   sudo nano /etc/nginx/sites-available/ваш-сайт
+   ```
+   Версию PHP-FPM можно проверить командой `ls /run/php/`.
+2. Включите сайт и перезапустите Nginx:
+   ```
+   sudo ln -s /etc/nginx/sites-available/ваш-сайт /etc/nginx/sites-enabled/
+   sudo nginx -t
+   sudo systemctl reload nginx
+   ```
+3. Для HTTPS используйте Certbot:
+   ```
+   sudo apt install -y certbot python3-certbot-nginx
+   sudo certbot --nginx -d ваш-домен.ру -d www.ваш-домен.ру
+   ```
+
 ## Сборка на CentOS 7 (через Docker)
 
 CentOS 7 использует старую версию glibc, поэтому Node.js 20 туда напрямую не ставится.

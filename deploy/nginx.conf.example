@@ -1,0 +1,43 @@
+# Конфиг Nginx для сайта (SPA + PHP-API)
+# Скопируйте на сервер:  sudo cp deploy/nginx.conf.example /etc/nginx/sites-available/ваш-сайт
+# Замените:
+#   - ваш-домен.ру          -> ваш реальный домен
+#   - /var/www/ваш-сайт/public -> реальный путь к папке public (см. шаг 6 инструкции)
+#   - php8.3-fpm.sock       -> версию PHP-FPM, установленную на сервере (проверить: ls /run/php/)
+
+server {
+    listen 80;
+    server_name ваш-домен.ру www.ваш-домен.ру;
+
+    root /var/www/ваш-сайт/public;
+    index index.html;
+
+    # SPA-роутинг: любой путь, которого нет на диске, отдаём на index.html,
+    # чтобы работали прямые ссылки на страницы каталога/услуг
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # PHP-API (products.php, services.php, leads.php, config.php)
+    location /api/ {
+        try_files $uri =404;
+
+        location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        }
+    }
+
+    # Кэширование статики (js/css/картинки из сборки Vite)
+    location ~* \.(js|css|png|jpg|jpeg|gif|svg|woff2?|ttf)$ {
+        expires 30d;
+        access_log off;
+    }
+
+    # Запрещаем прямой доступ к config.php по http, если он не нужен снаружи напрямую
+    # (products.php/services.php/leads.php сами подключают его через require)
+    location = /api/config.php {
+        deny all;
+    }
+}
