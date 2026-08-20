@@ -4,6 +4,7 @@ import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 
 const NAV_LINKS = [
+  { label: 'О компании', to: '/about' },
   { label: 'Продукция', to: '/catalog' },
   { label: 'Услуги', to: '/services' },
   { label: 'Преимущества', anchor: 'advantages' },

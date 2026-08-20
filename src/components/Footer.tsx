@@ -35,6 +35,11 @@ const Footer = () => {
             <h4 className="font-display text-lg mb-5">Разделы</h4>
             <ul className="space-y-3">
               <li>
+                <Link to="/about" className="text-primary-foreground/70 hover:text-accent transition">
+                  О компании
+                </Link>
+              </li>
+              <li>
                 <Link to="/catalog" className="text-primary-foreground/70 hover:text-accent transition">
                   Продукция
                 </Link>
