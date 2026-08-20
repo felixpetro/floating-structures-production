@@ -40,8 +40,10 @@ def handler(event: dict, context) -> dict:
         if slug:
             safe_slug = slug.replace("'", "''")
             cur.execute(
-                f"SELECT id, slug, name, category, badge, description, long_description, specs, features, sort_order "
-                f"FROM products WHERE slug = '{safe_slug}'"
+                f"SELECT p.id, p.slug, p.name, c.name AS category, c.slug AS category_slug, "
+                f"p.badge, p.description, p.long_description, p.specs, p.features, p.sort_order "
+                f"FROM products p JOIN categories c ON p.category_id = c.id "
+                f"WHERE p.slug = '{safe_slug}'"
             )
             row = cur.fetchone()
             if not row:
@@ -65,8 +67,10 @@ def handler(event: dict, context) -> dict:
             }
 
         cur.execute(
-            "SELECT id, slug, name, category, badge, description, long_description, specs, features, sort_order "
-            "FROM products ORDER BY sort_order ASC"
+            "SELECT p.id, p.slug, p.name, c.name AS category, c.slug AS category_slug, "
+            "p.badge, p.description, p.long_description, p.specs, p.features, p.sort_order "
+            "FROM products p JOIN categories c ON p.category_id = c.id "
+            "ORDER BY p.sort_order ASC"
         )
         rows = cur.fetchall()
 

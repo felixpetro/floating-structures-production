@@ -12,6 +12,7 @@ export interface Product {
   slug: string;
   name: string;
   category: string;
+  category_slug: string;
   badge?: string | null;
   description: string;
   long_description?: string | null;
